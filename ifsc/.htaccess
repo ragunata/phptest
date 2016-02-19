@@ -1,10 +1,10 @@
 RewriteEngine On
-RewriteBase /php/ifsc  
+RewriteBase /phptest/ifsc  
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond $1 !^(index\.php|images|robots\.txt|css|docs|js|system)
-RewriteRule ^(.*)$ /php/ifsc/index.php?/$1 [L]
+RewriteRule ^(.*)$ /phptest/ifsc/index.php?/$1 [L]
 
 
 <ifModule mod_gzip.c>
