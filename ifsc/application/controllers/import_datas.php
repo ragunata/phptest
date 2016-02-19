@@ -9,19 +9,19 @@ class Import_datas extends CI_Controller
 		{
             redirect(ADMIN.'/login');
         }
-		$this->load->model('advertisment_model');
+		$this->load->model('bank_model');
     }
      
   
    #Import Excel From File
    public function index()
    {
-	 #ini_set('MAX_EXECUTION_TIME', -1);
-	 #ini_set('memory_limit', '-1');
+	 ini_set('MAX_EXECUTION_TIME', -1);
+	 ini_set('memory_limit', '-1');
 	 if($_POST)
 	 {
 		 $this->form_validation->set_rules('file_data', 'File', 'required'); 
-		 if($this->form_validation->run() == true && $_FILES['file_data']['name'] && $_FILES['file_data']['tmp_name'] && ($_FILES['file_data']['type']=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['file_data']['type']=='application/zip'))
+		 if($this->form_validation->run() == true && $_FILES['file_data']['name'] && $_FILES['file_data']['tmp_name'] && ($_FILES['file_data']['type']=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $_FILES['file_data']['type']=='application/zip' || $_FILES['file_data']['type']=="application/vnd.ms-excel"))
 		 {
 				 $file_name= $_FILES['file_data']['tmp_name'];		 
 				 require_once APPPATH . 'third_party/PHPExcel.php';
@@ -38,53 +38,34 @@ class Import_datas extends CI_Controller
 						if($objWorksheet->getCellByColumnAndRow(0,$i)->getValue()!='')
 						{
 							$count=$count+1;
-							$name = ltrim($objWorksheet->getCellByColumnAndRow(0,$i)->getValue());
-							$email = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
-							$contact_number = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
-							$website = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
-							$owner = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());
+							$bankName = ltrim($objWorksheet->getCellByColumnAndRow(0,$i)->getValue());
+							$ifsc = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
+							$micr = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
+							$area = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
+							$contact = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());
 							$address = ltrim($objWorksheet->getCellByColumnAndRow(5,$i)->getValue());
-							$area = ltrim($objWorksheet->getCellByColumnAndRow(6,$i)->getValue());
 							$city = ltrim($objWorksheet->getCellByColumnAndRow(7,$i)->getValue());
-							$zip = ltrim($objWorksheet->getCellByColumnAndRow(8,$i)->getValue());
-							$category =ltrim($objWorksheet->getCellByColumnAndRow(9,$i)->getValue());
-							if($category=='')
-							{
-								$category='Yellow Pages';
-							}
-							$fax ='';
-							$description = '';
-							$start_time ='10 am';
-							$end_time = '7 pm';
-							$plan = '4';
-							$category=explode(',',$category);
-							$category=array_unique($category);
-							$category=implode(',',$category);
-							$city_id=($city!='')?$this->advertisment_model->cityFindOrSave($city):0;
-							$area_id=($area!='')?$this->advertisment_model->areaFindOrSave($area,$city_id):0;
-							if($owner==null || $owner==NULL)
-							{
-								$owner='Not Available';
-							}
+							$district = ltrim($objWorksheet->getCellByColumnAndRow(8,$i)->getValue());
+							$state = ltrim($objWorksheet->getCellByColumnAndRow(9,$i)->getValue());
+							$bank_id=($area!='')?$this->bank_model->bankFindOrSave($bankName):0;
+							$state_id=($area!='')?$this->bank_model->stateFindOrSave($state):0;
+							$district_id=($area!='')?$this->bank_model->districtFindOrSave($district,$state_id):0;
+							$city_id=($city!='')?$this->bank_model->cityFindOrSave($city,$state_id,$district_id):0;
+							$area_id=($area!='')?$this->bank_model->areaFindOrSave($area,$state_id,$district_id,$city_id):0;
 							$data_user = array(
-										 "name" =>$name,
-										 "owner" => $owner,
-										 "address_line"=>$address,
+										 "bank_id" =>$bank_id,
+										 "ifsc_code"=>$ifsc,
+										 "micr_code"=>$micr,
+										 "state_id" => $state_id,
+										 "area_id" => $area_id,
+										 "address"=>$address,
 										 "city_id"=>$city_id,	
 										 "area_id"=>$area_id,	
-										 "zip"=>$zip,
-										 "fax"=>$fax,
-										 "email"=>$email,
-										 "description"=>$description,
-										 "contact_number"=>$contact_number,
-										 "working_start"=>$start_time,
-										 "working_end"=>$end_time,
-										 "created"=>date('y-m-d H:i:s'),
-										 "plan_id"=>$plan,
-										 "is_active"=>1,
-										 "user_id"=>1,					 
-										 );											 
-							  if(!$this->advertisment_model->add_data($data_user,$category,$contact_number))
+										 "contact"=>$contact,
+										 "created"=>date('Y-m-d H:i:s'),
+										 "is_active"=>1,				 
+										 );										 
+							  if(!$this->bank_model->add_data($data_user))
 							  {
 								$data['status']="<p style='color:red;'>Error</p>";  
 								$data['total_rows']=$total_rows;
@@ -96,9 +77,7 @@ class Import_datas extends CI_Controller
 					 $data['status']="<p style='color:green;'>Success</p>";  
 					 $data['total_rows']=$total_rows;
 					 $data['inserted_datas']=$count;
-					$data['message']="<p style='color:green;'>Data Imported Successfully</p>"; 
-					 
-					 
+					 $data['message']="<p style='color:green;'>Data Imported Successfully</p>"; 
 				  }
 				  else
 				  {
