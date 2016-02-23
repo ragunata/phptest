@@ -967,7 +967,7 @@ width: 11px;}
 	height: 250px;
 }
 
-.dropdown-menu li>a:hover, .dropdown-menu .active>a, .dropdown-menu .active>a:hover { background:#00ba8b;}
+.dropdown-menu li>a:hover, .dropdown-menu .active>a, .dropdown-menu .active>a:hover { background:#fe4f00;}
 
 .accordion-heading { background:#e5e5e5;  }
 .accordion-heading a { color:#545454; text-decoration:none; font-weight:bold; }
@@ -1367,4 +1367,8 @@ padding-left:10px;
 .pac-container:after {  /* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
     background-image: none !important;
     height: 0px;
+}
+.nav-tabs li a
+{
+	color:#fe4f00;
 }
