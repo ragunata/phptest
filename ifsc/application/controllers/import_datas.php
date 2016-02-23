@@ -44,9 +44,9 @@ class Import_datas extends CI_Controller
 							$area = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
 							$contact = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());
 							$address = ltrim($objWorksheet->getCellByColumnAndRow(5,$i)->getValue());
-							$city = ltrim($objWorksheet->getCellByColumnAndRow(7,$i)->getValue());
-							$district = ltrim($objWorksheet->getCellByColumnAndRow(8,$i)->getValue());
-							$state = ltrim($objWorksheet->getCellByColumnAndRow(9,$i)->getValue());
+							$city = ltrim($objWorksheet->getCellByColumnAndRow(6,$i)->getValue());
+							$district = ltrim($objWorksheet->getCellByColumnAndRow(7,$i)->getValue());
+							$state = ltrim($objWorksheet->getCellByColumnAndRow(8,$i)->getValue());
 							$bank_id=($area!='')?$this->bank_model->bankFindOrSave($bankName):0;
 							$state_id=($area!='')?$this->bank_model->stateFindOrSave($state):0;
 							$district_id=($area!='')?$this->bank_model->districtFindOrSave($district,$state_id):0;
