@@ -40,7 +40,7 @@ class Import_datas extends CI_Controller
 							$count=$count+1;
 							$bankName = ltrim($objWorksheet->getCellByColumnAndRow(0,$i)->getValue());
 							$ifsc = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
-							$micr = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
+							$micr = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
 							$area = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
 							$contact = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
 							$address = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());

@@ -5,6 +5,8 @@
         <li class="<?php echo ($this->uri->segment(2) == 'dashboard') ? 'active' : ''; ?>"><?php echo anchor(base_url().ADMIN.'/dashboard', '<i class="icon-dashboard"></i><span>Dashboard</span>'); ?> </li>
 		<?php if(sub_admin_menu_check('webusers')) { ?>
 		<li class="<?php echo ($this->uri->segment(2) == 'users') ? 'active' : ''; ?>"><?php echo anchor(base_url().ADMIN.'/users', '<i class="icon-user"></i><span>Users</span>'); ?></li><?php } 
+		if(sub_admin_menu_check('webusers')) { ?>
+		<li class="<?php echo ($this->uri->segment(2) == 'banks') ? 'active' : ''; ?>"><?php echo anchor(base_url().ADMIN.'/banks', '<i class="icon-home"></i><span>Banks</span>'); ?></li><?php } 
         if(sub_admin_menu_check('pages')) { ?>
 		<li class="<?php echo ($this->uri->segment(2) == 'pages') ? 'active' : ''; ?>"><?php echo anchor(base_url().ADMIN.'/pages', '<i class="icon-credit-card "></i><span>Pages</span>'); ?> </li>
 		<?php } $masters=$this->config->item('master_menus'); ?>

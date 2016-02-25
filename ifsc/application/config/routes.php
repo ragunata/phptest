@@ -255,6 +255,17 @@ $route[ADMIN.'/comment_delete/delete/(:any)'] = 'comments/delete/$1';
 $route[ADMIN.'/comments_enable/enable/(:any)/(:any)/(:any)'] = 'comments/update_status/$1/enable/$2/$3';
 $route[ADMIN.'/comments_enable/disable/(:any)/(:any)/(:any)'] = 'comments/update_status/$1/disable/$2/$3';
 
+##########Admin Banks###############
+$route[ADMIN.'/banks'] = 'banks/admin_index';
+$route[ADMIN.'/banks/delete/(:any)'] = 'banks/delete/$1';//1 deleted id
+$route[ADMIN.'/banks/bulkautions/(:any)/(:any)'] = 'banks/bulkautions/$1/$2';
+$route[ADMIN.'/banks/(:any)'] = 'banks/admin_index/$1';
+$route[ADMIN.'/banks/(:any)/(:any)/(:any)'] = 'banks/index/$1/$2/$3';
+$route[ADMIN.'/banks_view/view/(:any)'] = 'banks/admin_view/$1';
+$route[ADMIN.'/banks_delete/delete/(:any)'] = 'banks/delete/$1';
+$route[ADMIN.'/banks_enable/enable/(:any)/(:any)/(:any)'] = 'banks/update_status/$1/enable/$2/$3';
+$route[ADMIN.'/banks_enable/disable/(:any)/(:any)/(:any)'] = 'banks/update_status/$1/disable/$2/$3';
+
 
 //plans
 $route[ADMIN.'/plans'] = 'plans/index';
