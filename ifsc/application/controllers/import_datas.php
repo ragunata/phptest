@@ -40,13 +40,13 @@ class Import_datas extends CI_Controller
 							$count=$count+1;
 							$bankName = ltrim($objWorksheet->getCellByColumnAndRow(0,$i)->getValue());
 							$ifsc = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
-							$micr = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
-							$area = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
-							$contact = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());
-							$address = ltrim($objWorksheet->getCellByColumnAndRow(5,$i)->getValue());
-							$city = ltrim($objWorksheet->getCellByColumnAndRow(6,$i)->getValue());
-							$district = ltrim($objWorksheet->getCellByColumnAndRow(7,$i)->getValue());
-							$state = ltrim($objWorksheet->getCellByColumnAndRow(8,$i)->getValue());
+							$micr = ltrim($objWorksheet->getCellByColumnAndRow(1,$i)->getValue());
+							$area = ltrim($objWorksheet->getCellByColumnAndRow(2,$i)->getValue());
+							$contact = ltrim($objWorksheet->getCellByColumnAndRow(3,$i)->getValue());
+							$address = ltrim($objWorksheet->getCellByColumnAndRow(4,$i)->getValue());
+							$city = ltrim($objWorksheet->getCellByColumnAndRow(5,$i)->getValue());
+							$district = ltrim($objWorksheet->getCellByColumnAndRow(6,$i)->getValue());
+							$state = ltrim($objWorksheet->getCellByColumnAndRow(7,$i)->getValue());
 							$bank_id=($area!='')?$this->bank_model->bankFindOrSave($bankName):0;
 							$state_id=($area!='')?$this->bank_model->stateFindOrSave($state):0;
 							$district_id=($area!='')?$this->bank_model->districtFindOrSave($district,$state_id):0;
@@ -60,7 +60,8 @@ class Import_datas extends CI_Controller
 										 "area_id" => $area_id,
 										 "address"=>$address,
 										 "city_id"=>$city_id,	
-										 "area_id"=>$area_id,	
+										 "area_id"=>$area_id,
+                                         "district_id"=>$district_id,										 
 										 "contact"=>$contact,
 										 "created"=>date('Y-m-d H:i:s'),
 										 "is_active"=>1,				 

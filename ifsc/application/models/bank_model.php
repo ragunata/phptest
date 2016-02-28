@@ -134,10 +134,10 @@ class Bank_model extends CI_Model {
 		}
 	}
 	
-	public function get_advertisments($flag , $conditions = array(), $sort_field=null, $order_type='Desc', $limit_start, $limit_end,$r_type=null) 
+	public function get_banks($flag , $conditions = array(), $sort_field=null, $order_type='Desc', $limit_start, $limit_end,$r_type=null) 
 	{  
-		$this->db->select('advertisements.id,advertisements.created,advertisements.name,advertisements.owner,advertisements.address_line,cities.name as city_name,advertisements.is_active');
-		$this->db->from('advertisements');
+		$this->db->select('banks.name as bank_name,bank_details.id,bank_details.ifsc_code,bank_details.contact,banks.created,banks.name,cities.name as city_name,banks.is_active');
+		$this->db->from('bank_details');
 		if(!empty($conditions))
 		{ 
 				foreach($conditions as $key=>$cond)
@@ -148,9 +148,10 @@ class Bank_model extends CI_Model {
 						$this->db->$cond['rule']($cond['value']);
 				}
 		}	
-		 $this->db->join('cities', 'cities.id = advertisements.city_id', 'left');
+				 $this->db->join('banks', 'banks.id = bank_details.bank_id');
+		 $this->db->join('cities', 'cities.id = bank_details.city_id', 'left');
 		if(!$sort_field)
-			$this->db->order_by('advertisements.id', $order_type);
+			$this->db->order_by('bank_details.id', $order_type);
 		else
 			$this->db->order_by($sort_field, $order_type);
 
@@ -169,10 +170,10 @@ class Bank_model extends CI_Model {
 	{
 		$this->db->select('id');
 		$this->db->where('id',$id);
-		$query = $this->db->get('advertisements');
+		$query = $this->db->get('bank_details');
 		$res = $query->row();
 		
-		$this->db->delete('advertisements',array('id' => $id));
+		$this->db->delete('banks',array('id' => $id));
 		$report = array();
 		$report['error'] = $this->db->_error_number();
 		$report['message'] = $this->db->_error_message();
@@ -185,7 +186,7 @@ class Bank_model extends CI_Model {
 	public function update_status($id, $data) 
 	{	
 		$this->db->where('id', $id);
-		$this->db->update('advertisements', $data);
+		$this->db->update('bank_details', $data);
 	
 		$report = array();
 		$report['error'] = $this->db->_error_number();
@@ -201,13 +202,13 @@ class Bank_model extends CI_Model {
 	#Admin - Get Advertisments Detail
 	public function get_advertisment_detail($id=null)
 	{
-		$this->db->select('advertisements.*,cities.name as city_name,states.name as state_name,countries.name as country_name,GROUP_CONCAT(advertisment_phones.number) as contact_number');
-		$this->db->where('advertisements.id',$id);
-		$this->db->from('advertisements');
-		$this->db->join('cities','cities.id=advertisements.city_id','left');
-		$this->db->join('states','states.id=advertisements.state_id','left');
-		$this->db->join('countries','countries.id=advertisements.country_id','left');
-		$this->db->join('advertisment_phones','advertisment_phones.advertisment_id=advertisements.id','left');
+		$this->db->select('banks.*,cities.name as city_name,states.name as state_name,countries.name as country_name,GROUP_CONCAT(advertisment_phones.number) as contact_number');
+		$this->db->where('banks.id',$id);
+		$this->db->from('banks');
+		$this->db->join('cities','cities.id=banks.city_id','left');
+		$this->db->join('states','states.id=banks.state_id','left');
+		$this->db->join('countries','countries.id=banks.country_id','left');
+		$this->db->join('advertisment_phones','advertisment_phones.advertisment_id=banks.id','left');
 		$query = $this->db->get();			
 		return $query->row_array(); 
 	}
@@ -265,25 +266,25 @@ class Bank_model extends CI_Model {
 		}
 		if($type=="total_records")
 		{
-			$this->db->select('advertisements.id');
+			$this->db->select('banks.id');
 		}
 		else
 		{
-		$this->db->select('SQL_CALC_FOUND_ROWS advertisements.id,advertisements.total_user_rated,advertisements.contact_number,advertisements.id,advertisements.zip,advertisements.name as add_name,advertisements.owner,
-		advertisements.address_line,advertisements.rating,advertisements.working_start,advertisements.working_end,advertisements.category_id,
-		cities.name as city_name,areas.name as area_name,advertisements.areas',false);
+		$this->db->select('SQL_CALC_FOUND_ROWS banks.id,banks.total_user_rated,banks.contact_number,banks.id,banks.zip,banks.name as add_name,banks.owner,
+		banks.address_line,banks.rating,banks.working_start,banks.working_end,banks.category_id,
+		cities.name as city_name,areas.name as area_name,banks.areas',false);
 		}
 		
-		$this->db->where('advertisements.is_active','1');		
+		$this->db->where('banks.is_active','1');		
         
 		if(isset($list_id) && !empty($list_id))
 		{
-		$this->db->where_in('advertisements.id',$list_id);	
+		$this->db->where_in('banks.id',$list_id);	
 		}
 		
 		if(isset($home_list_id) && !empty($home_list_id))
 		{
-		 $this->db->where_in('advertisements.id',$home_list_id);	
+		 $this->db->where_in('banks.id',$home_list_id);	
 		}
 		if($category_set!='')
 		{
@@ -319,12 +320,12 @@ class Bank_model extends CI_Model {
 		#Keyword Based Search
 		if(!empty($keyword) && empty($category))
 		{
-			$this->db->or_like('advertisements.name',$keyword);
+			$this->db->or_like('banks.name',$keyword);
 		}
 		
-		$this->db->from('advertisements');
-		$this->db->join('cities','cities.id=advertisements.city_id');
-		$this->db->join('areas','areas.id=advertisements.area_id');		  
+		$this->db->from('banks');
+		$this->db->join('cities','cities.id=banks.city_id');
+		$this->db->join('areas','areas.id=banks.area_id');		  
 		if($type=="total_records")
 		{
 			$query = $this->db->get();	
@@ -356,12 +357,12 @@ class Bank_model extends CI_Model {
 	#Front End - Get Advertisment Detail
 	public function get_add_detail($id=null)
 	{
-		$this->db->select('advertisements.*,cities.name as city_name,areas.name as area_name,category_id as list_cat_id');
-		$this->db->where('advertisements.id',$id);
-		$this->db->where('advertisements.is_active','1');
-		$this->db->from('advertisements');
-		$this->db->join('cities','cities.id=advertisements.city_id');
-		$this->db->join('areas','areas.id=advertisements.area_id','left');
+		$this->db->select('banks.*,cities.name as city_name,areas.name as area_name,category_id as list_cat_id');
+		$this->db->where('banks.id',$id);
+		$this->db->where('banks.is_active','1');
+		$this->db->from('banks');
+		$this->db->join('cities','cities.id=banks.city_id');
+		$this->db->join('areas','areas.id=banks.area_id','left');
 		$query = $this->db->get();			
 		$results=$query->row_array(); 
 		
@@ -482,7 +483,7 @@ class Bank_model extends CI_Model {
 	      $cat_results=$query->row_array();		  
 		  $this->db->where('categories.parent',$cat_results['id']);
 		}
-		$this->db->select('categories.id,categories.name,advertisements.id as add_id');
+		$this->db->select('categories.id,categories.name,banks.id as add_id');
 		$this->db->where('categories.is_active','1');
 		if(!empty($keyword))
 		{
@@ -521,7 +522,7 @@ class Bank_model extends CI_Model {
 			$this->db->where('areas.name',$area);
 		}
 		$this->db->join('category_listing','category_listing.category_id=categories.id');
-		$this->db->join('advertisements','advertisements.id=category_listing.listing_id');
+		$this->db->join('banks','banks.id=category_listing.listing_id');
 		$this->db->join('areas','areas.id=category_listing.area_id');
 		$this->db->join('cities','cities.id=category_listing.city_id');
 		$this->db->group_by('categories.id');		
@@ -537,8 +538,8 @@ class Bank_model extends CI_Model {
 	#Get Category Results
 	public function get_related_list($type=null,$limit_start=10, $limit_end=0,$city=null,$area=null,$keyword=null,$category=null,$home_category=null)
 	{
-		$this->db->select('advertisements.total_user_rated,advertisements.contact_number,advertisements.id,advertisements.name as add_name,advertisements.owner,advertisements.address_line,advertisements.zip,advertisements.rating,advertisements.working_start,advertisements.working_end,cities.name as city_name,states.name as state_name,areas.name as area_name,advertisements.areas');
-		$this->db->where('advertisements.is_active','1');	 
+		$this->db->select('banks.total_user_rated,banks.contact_number,banks.id,banks.name as add_name,banks.owner,banks.address_line,banks.zip,banks.rating,banks.working_start,banks.working_end,cities.name as city_name,states.name as state_name,areas.name as area_name,banks.areas');
+		$this->db->where('banks.is_active','1');	 
 		#City Based Search
 		if(!empty($city_name))
 		{
@@ -554,7 +555,7 @@ class Bank_model extends CI_Model {
 		    $split_array=explode(' ',$keyword);
 			foreach($split_array as $result)
 			{
-				$this->db->or_like('advertisements.name',$result);
+				$this->db->or_like('banks.name',$result);
 			}			
 		}
 			if(!empty($home_category))
@@ -562,7 +563,7 @@ class Bank_model extends CI_Model {
 		    $split_array=explode(' ',$home_category);
 			foreach($split_array as $result)
 			{
-				$this->db->or_where('advertisements.name LIKE',$result);
+				$this->db->or_where('banks.name LIKE',$result);
 			}
 		}
 		if(!empty($category_name))
@@ -570,15 +571,15 @@ class Bank_model extends CI_Model {
 		    $split_array=explode(' ',$category_name);
 			foreach($split_array as $result)
 			{
-				$this->db->or_like('advertisements.name',$result);
+				$this->db->or_like('banks.name',$result);
 			}
 		}
-		$this->db->from('advertisements');
-	    $this->db->join('areas','areas.id=advertisements.area_id','left');
-		$this->db->join('cities','cities.id=advertisements.city_id','left');
-		$this->db->join('states','states.id=advertisements.state_id','left');
-		$this->db->order_by('advertisements.id','RANDOM');
-		$this->db->group_by('advertisements.id');
+		$this->db->from('banks');
+	    $this->db->join('areas','areas.id=banks.area_id','left');
+		$this->db->join('cities','cities.id=banks.city_id','left');
+		$this->db->join('states','states.id=banks.state_id','left');
+		$this->db->order_by('banks.id','RANDOM');
+		$this->db->group_by('banks.id');
 		$this->db->limit(10);
 		$query = $this->db->get();	
 		$results=$query->result_array();
@@ -600,7 +601,7 @@ class Bank_model extends CI_Model {
 	{
 		$this->db->select('*');
 		$this->db->where('id', $id);
-		$query = $this->db->get('advertisements');
+		$query = $this->db->get('banks');
 		return $query->row_array();
 	}
 	function edit($id)
@@ -646,7 +647,7 @@ class Bank_model extends CI_Model {
 			'created_at'=> date('Y-m-d h:i:s'),
 		);
 		$this->db->where('id', $id);
-		$this->db->update('advertisements', $data);
+		$this->db->update('banks', $data);
 	}
 	
 	
@@ -654,7 +655,7 @@ class Bank_model extends CI_Model {
 	{
 		$this->db->select('categories.name as category_name,cities.name as city_name,areas.name as area_name');
 		$this->db->join('categories','categories.id=category_listing.category_id');	
-		$this->db->join('advertisements','advertisements.id=category_listing.listing_id');
+		$this->db->join('banks','banks.id=category_listing.listing_id');
 		$this->db->join('areas','areas.id=category_listing.area_id');
 		$this->db->join('cities','cities.id=category_listing.city_id');
 	    $this->db->where('category_listing.listing_id',$add_id);
@@ -668,7 +669,7 @@ class Bank_model extends CI_Model {
 	{
 		$this->db->select('categories.name as category_name,cities.name as city_name,areas.name as area_name');
 		$this->db->join('categories','categories.id=category_listing.category_id','left');	
-		$this->db->join('advertisements','advertisements.id=category_listing.listing_id','left');
+		$this->db->join('banks','banks.id=category_listing.listing_id','left');
 		$this->db->join('areas','areas.id=category_listing.area_id','left');
 		$this->db->join('cities','cities.id=category_listing.city_id','left');
 		$this->db->from('category_listing');
