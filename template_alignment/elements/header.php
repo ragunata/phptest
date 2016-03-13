@@ -21,10 +21,10 @@
             <div class="navbar-collapse  collapse">
               <ul class="nav navbar-nav navbar-right">
                <li class="active"><a href="#">Home</a></li>
-                <li><a href="about_us.html">About</a></li>
-                <li><a href="#">Agents</a></li>       
-                <li><a href="#">Blog</a></li>
-                <li><a href="contact_us.html">Contact</a></li>
+                <li><a href="about_us.php">About</a></li>
+                <!-- <li><a href="#">Agents</a></li>       
+                <li><a href="#">Blog</a></li> -->
+                <li><a href="contact_us.php">Contact</a></li>
               </ul>
             </div>
             <!-- #Nav Ends -->
@@ -40,13 +40,13 @@
 
 <!-- Header Starts -->
 <div class="header">
-<a href="index.html"><img src="./images/logo.png" alt="Realestate"></a>
-
+<a href="index.php"><img src="./images/logo.png" alt="Realestate"></a>
+			  <!-- 
               <ul class="pull-right">
-                <li><a href="list.html">Buy</a></li>
-                <li><a href="list.html">Sale</a></li>         
-                <li><a href="list.html">Rent</a></li>
-              </ul>
+                <li><a href="list.php">Buy</a></li>
+                <li><a href="list.php">Sale</a></li>         
+                <li><a href="list.php">Rent</a></li>
+              </ul> -->
 </div>
 <!-- #Header Starts -->
 </div>
